@@ -66,6 +66,12 @@ function getSebastiansStudentStatus(student: Student): string {
     }
 
   return student.passed ? "VG" : "IG";
+
+  // if (student.passed === true) {
+  //   return "VG";
+  // } else {
+  //   return "IG";
+  // }
 }
 
 
@@ -107,7 +113,7 @@ const ONE_WEEK_IN_MS = 604800000;
 const CITY_NAME = "Stockholm";
 const DAYS_IN_WEEK = 7;
 
-//Tar ej med en vecka från nu-aspekten
+//Tar ej med en vecka från nu-villkoret
 // function averageWeeklyTemperatureInStockholm(measuredTemperatures: Temp[]) {
 //   const days_in_week = 7;
 //   const sumOfTemps = measuredTemperatures.reduce((accumulator, currentValue) => accumulator + currentValue.temperature, 0);
@@ -260,7 +266,7 @@ function presentStudents(students: Student[]) {
 //   return result;
 // }
 
-//undvika repetativ kod, och få en mer lättläst kod.
+//undvika repetativ kod, och få en mer lättläst kod. skriver ut orden med ett mellanslag
 function concatenateStrings() {
   const result = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet'];
   return result.join(' ');
@@ -294,38 +300,70 @@ function concatenateStrings() {
 //     return "Du är under 20 år";
 //   }
 // }
-
-//funktionen gör både calculate age, validate age och create user, skapa klass, magic number, ändra negerande villkor
-
+//src-models-User.ts (export class User )
 class User {
   constructor(
     public name: string,
     public birthday: Date,
     public email: string,
-    public password: string
+    public password: string,
+    public avatarURL?: string,
+    public adress?: string,
+
   ) {}
-  }
-
-  const UNIX_START_YEAR = 1970;
-
-  function calculateAge(user: User): number {
-    const ageDiff = Date.now() - user.birthday.getTime();
-    const ageDate = new Date(ageDiff);
-    return Math.abs(ageDate.getUTCFullYear() - UNIX_START_YEAR);
-  }
   
-  function validateUser(user: User): boolean {
-    const userAge = calculateAge(user);
-    return userAge >= 20;
+  validateUserAge(user: User): number {
+    const unix_start_year = 1970;
+    let ageDiff = Date.now() - user.birthday.getTime();
+    let ageDate = new Date(ageDiff);
+    let userAge = Math.abs(ageDate.getUTCFullYear() - unix_start_year);
+
+    return userAge;
   }
-  
-  function createUser(user: User) {
-    if (validateUser(user)) {
-      // Logic for creating a user
-    } else {
+};
+
+function createUser(user: User) {
+  const userAge = user.validateUserAge(user);
+  if (userAge > 20) {
+    // Logic for creating a user
+  } else {
       return "Du är under 20 år";
     }
+}
+
+
+
+//funktionen gör både calculate age, validate age och create user, skapa klass, magic number, ändra negerande villkor
+
+// class User {
+//   constructor(
+//     public name: string,
+//     public birthday: Date,
+//     public email: string,
+//     public password: string
+//   ) {}
+//   }
+
+//   const UNIX_START_YEAR = 1970;
+
+//   function calculateAge(user: User): number {
+//     let ageDiff = Date.now() - user.birthday.getTime();
+//     let ageDate = new Date(ageDiff);
+//     return Math.abs(ageDate.getUTCFullYear() - UNIX_START_YEAR);
+//   }
+  
+//   function validateUser(user: User): boolean {
+//     const userAge = calculateAge(user);
+//     return userAge >= 20;
+//   }
+  
+//   function createUser(user: User) {
+//     if (validateUser(user)) {
+//       // Logic for creating a user
+//     } else {
+//       return "Du är under 20 år";
+//     }
     
-  }
+//   }
 
   
