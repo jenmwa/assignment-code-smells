@@ -50,157 +50,141 @@ function sortByNameDescending(products: Product[]): Product[] {
   2. Refaktorera funktionen createProductHtml :)
   */
 
-class Cart {
-  addToCart(i: number) {}
-};
+  class Cart {
+    addToCart(i: number) {}
+  }
+  export let cartList = JSON.parse(localStorage.getItem("savedCartList") || "[]");
+  export let productList = JSON.parse(localStorage.getItem("savedList") || "[]");
+  
+  export function createProductHtml() {
+    let quantity = 0;
+  
+    for (let i = 0; i < cartList.length; i++) {
+      quantity += cartList[i].quantity;
+    }
+  
+  
+    let floatingCart = document.getElementById(
+      "floatingcartnumber"
+    ) as HTMLElement;
+    floatingCart.innerHTML = "" + quantity;
+  
+    for (let i = 0; i < productList.length; i++) {
 
-export let cartList = JSON.parse(localStorage.getItem("savedCartList") || "[]");
-export let productList = JSON.parse(localStorage.getItem("savedList") || "[]");
+      let dogproduct: HTMLDivElement = document.createElement("div");
+  
+      let dogImgContainer: HTMLDivElement = document.createElement("div");
+      dogproduct.appendChild(dogImgContainer);
 
-export function createProductHtml() {
-
-  updateCart();
-
-  for (let i = 0; i < productList.length; i++) {
-    let dogproduct: HTMLDivElement = document.createElement("div");
-
-    let showDogImageElements = createDogImageElements(i);
-    dogproduct.appendChild(showDogImageElements);
-
-    createNameElement(i, dogproduct);
-
-    createPriceElement(i, dogproduct);
-
-    createInfoElement(i, dogproduct);
-
-    categories(i, dogproduct);
-
-}
-
-    function createDogImageElements(i: number) {
-      let dogImageContainer: HTMLDivElement = document.createElement("div");
-      dogImageContainer.className = "dogimgcontainer";
-
-      let dogImg: HTMLImageElement = document.createElement("img");
-      dogImg.src = productList[i].picture;
-      dogImg.alt = productList[i].pictureAlt;
-
-      dogImg.addEventListener("mouseover", () => {
-      cartSymbolContainer.classList.add("hover");
-      dogImg.classList.add("hover");
+      function createDogImage() {
+        let dogImg: HTMLImageElement = document.createElement("img");
+  
+        dogImg.src = productList[i].picture;
+        dogImg.alt = productList[i].pictureAlt;
+  
+        dogImgContainer.className = "dogimgcontainer";
+        dogImgContainer.appendChild(dogImg);
+  
+        dogImg.addEventListener("mouseover", () => {
+        cartSymbolContainer.classList.add("hover");
+        dogImg.classList.add("hover");
       });
-
+  
       dogImg.addEventListener("mouseout", () => {
-      dogImg.classList.remove("hover");
-      cartSymbolContainer.classList.remove("hover");
+        dogImg.classList.remove("hover");
+        cartSymbolContainer.classList.remove("hover");
       });
-
-      dogImageContainer.appendChild(dogImg);
-
-      let cartSymbolContainer: HTMLDivElement = createCartSymbolContainer(dogImageContainer);
-    
-      let cartSymbol: HTMLElement = createCartSymbol(cartSymbolContainer);
-
+      
+      dogImg.addEventListener("click", () => {
+        productList[i].productSpec = !productList[i].productSpec;
+        window.location.href = "product-spec.html#backArrow";
+        let listastext = JSON.stringify(productList);
+        localStorage.setItem("savedList", listastext);
+      });
+    }
+      //create cart Symbol container
+      function createCartSymbolContainer(){
+        let cartSymbolContainer: HTMLDivElement = document.createElement("div");
+        cartSymbolContainer.className = "cartSymbolContainer";
+        dogImgContainer.appendChild(cartSymbolContainer);
+        return cartSymbolContainer;
+      }
+  
+      //create cart symbol
+      function createCartSymbol() {
+        let cartSymbol: HTMLElement = document.createElement("i");
+        cartSymbol.className = "bi bi-bag-plus";
+        return cartSymbol;
+      };
+  
+      //create element for name
+      function createName() {
+        let name: HTMLHeadingElement = document.createElement("h5");
+        name.innerHTML = productList[i].name;
+        dogproduct.appendChild(name);
+      }
+  
+      //create element for price
+      function createPrice() {
+        let price: HTMLHeadingElement = document.createElement("p");
+        price.innerHTML = "$" + productList[i].price;
+        dogproduct.appendChild(price);
+      }
+  
+      //create element for info
+      function createInfo() {
+        let info: HTMLHeadingElement = document.createElement("p");
+        info.innerHTML = productList[i].info;
+        dogproduct.appendChild(info);
+      }
+      
+      createDogImage();
+      let cartSymbolContainer = createCartSymbolContainer();
+      let cartSymbol = createCartSymbol();
+      cartSymbolContainer.appendChild(cartSymbol);
+      createName();
+      createPrice();
+      createInfo();
+  
+      productList[i].productSpec = false;
+  
       cartSymbol.addEventListener("click", () => {
         let cart = new Cart();
         cart.addToCart(i);
       });
-
-      productList[i].productSpec = false;
-
-      dogImg.addEventListener("click", () => {
-      productList[i].productSpec = !productList[i].productSpec;
-      window.location.href = "product-spec.html#backArrow";
-      let listastext = JSON.stringify(productList);
-      localStorage.setItem("savedList", listastext);
-      });
-
-      return dogImageContainer;
-
+  
+      if (productList[i].category === "sassy") {
+        let cat1: HTMLElement = document.getElementById("sassy") as HTMLElement;
+        dogproduct.className = "dogproduct";
+        cat1.appendChild(dogproduct);
       }
-      
+      if (productList[i].category === "kriminella") {
+        let cat2: HTMLElement = document.getElementById(
+          "kriminella"
+        ) as HTMLElement;
+        dogproduct.className = "dogproduct";
+        cat2.appendChild(dogproduct);
+      }
+      if (productList[i].category == "singlar") {
+        let cat3: HTMLElement = document.getElementById("singlar") as HTMLElement;
+        dogproduct.className = "dogproduct";
+        cat3.appendChild(dogproduct);
+      }
+      if (productList[i].category === "puppy") {
+        let cat4: HTMLElement = document.getElementById("puppy") as HTMLElement;
+        dogproduct.className = "dogproduct";
+        cat4.appendChild(dogproduct);
+      }
+      if (productList[i].category === "oldies") {
+        let cat5: HTMLElement = document.getElementById("oldies") as HTMLElement;
+        dogproduct.className = "dogproduct";
+        cat5.appendChild(dogproduct);
+      }
+    }
+    let listastext = JSON.stringify(productList);
+    localStorage.setItem("savedList", listastext);
+    sessionStorage.clear();
   }
-
-  setLocalStorage();
-
-
-function createCartSymbol(cartSymbolContainer: HTMLDivElement) {
-  let cartSymbol: HTMLElement = document.createElement("i");
-  cartSymbol.className = "bi bi-bag-plus";
-  cartSymbolContainer.appendChild(cartSymbol);
-  return cartSymbol;
-}
-
-function createCartSymbolContainer(dogImageContainer: HTMLDivElement) {
-  let cartSymbolContainer: HTMLDivElement = document.createElement("div");
-  cartSymbolContainer.className = "cartSymbolContainer";
-  dogImageContainer.appendChild(cartSymbolContainer);
-  return cartSymbolContainer;
-}
-
-function createInfoElement(i: number, dogproduct: HTMLDivElement) {
-  let info: HTMLHeadingElement = document.createElement("p");
-  info.innerHTML = productList[i].info;
-  dogproduct.appendChild(info);
-}
-
-function createPriceElement(i: number, dogproduct: HTMLDivElement) {
-  let price: HTMLHeadingElement = document.createElement("p");
-  price.innerHTML = "$" + productList[i].price;
-  dogproduct.appendChild(price);
-}
-
-function createNameElement(i: number, dogproduct: HTMLDivElement) {
-  let name: HTMLHeadingElement = document.createElement("h5");
-  name.innerHTML = productList[i].name;
-  dogproduct.appendChild(name);
-}
-
-function setLocalStorage() {
-  let listastext = JSON.stringify(productList);
-  localStorage.setItem("savedList", listastext);
-  sessionStorage.clear();
-}
-
-function updateCart() {
-  let quantity = 0;
-  for (let i = 0; i < cartList.length; i++) {
-    quantity += cartList[i].quantity;
-  }
-
-  let floatingCart = document.getElementById("floatingcartnumber") as HTMLElement;
-  floatingCart.innerHTML = "" + quantity;
-}
-
-function categories(i: number, dogproduct: HTMLDivElement) {
-  if (productList[i].category === "sassy") {
-    let cat1: HTMLElement = document.getElementById("sassy") as HTMLElement;
-    dogproduct.className = "dogproduct";
-    cat1.appendChild(dogproduct);
-  }
-  if (productList[i].category === "kriminella") {
-    let cat2: HTMLElement = document.getElementById(
-      "kriminella"
-    ) as HTMLElement;
-    dogproduct.className = "dogproduct";
-    cat2.appendChild(dogproduct);
-  }
-  if (productList[i].category == "singlar") {
-    let cat3: HTMLElement = document.getElementById("singlar") as HTMLElement;
-    dogproduct.className = "dogproduct";
-    cat3.appendChild(dogproduct);
-  }
-  if (productList[i].category === "puppy") {
-    let cat4: HTMLElement = document.getElementById("puppy") as HTMLElement;
-    dogproduct.className = "dogproduct";
-    cat4.appendChild(dogproduct);
-  }
-  if (productList[i].category === "oldies") {
-    let cat5: HTMLElement = document.getElementById("oldies") as HTMLElement;
-    dogproduct.className = "dogproduct";
-    cat5.appendChild(dogproduct);
-  }
-}
 
 
 /*
