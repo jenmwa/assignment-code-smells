@@ -49,7 +49,6 @@ function sortByNameDescending(products: Product[]): Product[] {
 /*
   2. Refaktorera funktionen createProductHtml :)
   */
-
   class Cart {
     addToCart(i: number) {}
   }
@@ -58,34 +57,25 @@ function sortByNameDescending(products: Product[]): Product[] {
   
   export function createProductHtml() {
     let quantity = 0;
-  
     for (let i = 0; i < cartList.length; i++) {
       quantity += cartList[i].quantity;
     }
-  
-  
     let floatingCart = document.getElementById(
       "floatingcartnumber"
     ) as HTMLElement;
     floatingCart.innerHTML = "" + quantity;
   
     for (let i = 0; i < productList.length; i++) {
-
       let dogproduct: HTMLDivElement = document.createElement("div");
-  
       let dogImgContainer: HTMLDivElement = document.createElement("div");
+      dogImgContainer.className = "dogimgcontainer";
       dogproduct.appendChild(dogImgContainer);
-
-      function createDogImage() {
-        let dogImg: HTMLImageElement = document.createElement("img");
+      let dogImg: HTMLImageElement = document.createElement("img");
   
-        dogImg.src = productList[i].picture;
-        dogImg.alt = productList[i].pictureAlt;
+      dogImg.src = productList[i].picture;
+      dogImg.alt = productList[i].pictureAlt;
   
-        dogImgContainer.className = "dogimgcontainer";
-        dogImgContainer.appendChild(dogImg);
-  
-        dogImg.addEventListener("mouseover", () => {
+      dogImg.addEventListener("mouseover", () => {
         cartSymbolContainer.classList.add("hover");
         dogImg.classList.add("hover");
       });
@@ -94,59 +84,36 @@ function sortByNameDescending(products: Product[]): Product[] {
         dogImg.classList.remove("hover");
         cartSymbolContainer.classList.remove("hover");
       });
-      
+  
+      dogImgContainer.appendChild(dogImg);
+      let cartSymbolContainer: HTMLDivElement = document.createElement("div");
+      cartSymbolContainer.className = "cartSymbolContainer";
+      dogImgContainer.appendChild(cartSymbolContainer);
+  
+      let cartSymbol: HTMLElement = document.createElement("i");
+      cartSymbol.className = "bi bi-bag-plus";
+      cartSymbolContainer.appendChild(cartSymbol);
+  
+      let name: HTMLHeadingElement = document.createElement("h5");
+      name.innerHTML = productList[i].name;
+      dogproduct.appendChild(name);
+  
+      let price: HTMLHeadingElement = document.createElement("p");
+      price.innerHTML = "$" + productList[i].price;
+      dogproduct.appendChild(price);
+  
+      let info: HTMLHeadingElement = document.createElement("p");
+      info.innerHTML = productList[i].info;
+      dogproduct.appendChild(info);
+  
+      productList[i].productSpec = false;
+  
       dogImg.addEventListener("click", () => {
         productList[i].productSpec = !productList[i].productSpec;
         window.location.href = "product-spec.html#backArrow";
         let listastext = JSON.stringify(productList);
         localStorage.setItem("savedList", listastext);
       });
-    }
-      //create cart Symbol container
-      function createCartSymbolContainer(){
-        let cartSymbolContainer: HTMLDivElement = document.createElement("div");
-        cartSymbolContainer.className = "cartSymbolContainer";
-        dogImgContainer.appendChild(cartSymbolContainer);
-        return cartSymbolContainer;
-      }
-  
-      //create cart symbol
-      function createCartSymbol() {
-        let cartSymbol: HTMLElement = document.createElement("i");
-        cartSymbol.className = "bi bi-bag-plus";
-        return cartSymbol;
-      };
-  
-      //create element for name
-      function createName() {
-        let name: HTMLHeadingElement = document.createElement("h5");
-        name.innerHTML = productList[i].name;
-        dogproduct.appendChild(name);
-      }
-  
-      //create element for price
-      function createPrice() {
-        let price: HTMLHeadingElement = document.createElement("p");
-        price.innerHTML = "$" + productList[i].price;
-        dogproduct.appendChild(price);
-      }
-  
-      //create element for info
-      function createInfo() {
-        let info: HTMLHeadingElement = document.createElement("p");
-        info.innerHTML = productList[i].info;
-        dogproduct.appendChild(info);
-      }
-      
-      createDogImage();
-      let cartSymbolContainer = createCartSymbolContainer();
-      let cartSymbol = createCartSymbol();
-      cartSymbolContainer.appendChild(cartSymbol);
-      createName();
-      createPrice();
-      createInfo();
-  
-      productList[i].productSpec = false;
   
       cartSymbol.addEventListener("click", () => {
         let cart = new Cart();
