@@ -1,72 +1,57 @@
+import { Product } from "../models/Product";
+import { CartProduct } from '../models/CartProduct'
+
 /*
 1. Se om du kan hitta problem med koden nedan och se om du kan göra den bättre.
 */
+
+//CODE SMELLS: dubbeldefinerade parametrar. FÖRENKLA sorteringsfunktionerna, mkt kodduplicering, stavfel descending + skapa models - Product.
 export enum Sort {
   PRICE_ASCENDING = "Stigande pris",
-  PRICE_DECENDING = "Sjunkande pris",
+  PRICE_DESCENDING = "Sjunkande pris",
   NAME_ALPHABETIC = "Alfabetisk ordning",
   NAME_ALPHABETIC_REVERSE = "Omvänd alfabetisk ordning",
 }
 
-export class Product {
-  constructor(
-    public id: number,
-    public name: string,
-    public imageUrl: string[],
-    public price: number,
-    public description: string
-  ) {
-    this.id = id;
-    this.name = name;
-    this.imageUrl = imageUrl;
-    this.price = price;
-    this.description = description;
-  }
-}
-
 export function sortProductsBy(sort: Sort, products: Product[]): Product[] {
-  let copiedList: Product[] = [];
-  products.forEach((product) => copiedList.push(product));
+  let copiedList: Product[] = [...products];
 
-  let sortedList: Product[] = [];
-  if (sort === Sort.PRICE_ASCENDING) {
-    sortedList = sortList("Price", copiedList);
-    sortedList.reverse();
-  } else if (sort === Sort.PRICE_DECENDING) {
-    sortedList = sortList("Price", copiedList);
-  } else if (sort === Sort.NAME_ALPHABETIC) {
-    sortedList = sortList("Name", copiedList);
-  } else if (sort === Sort.NAME_ALPHABETIC_REVERSE) {
-    sortedList = sortList("Name", copiedList);
-    sortedList.reverse();
+  switch (sort) {
+    case Sort.PRICE_ASCENDING:
+      return sortByPriceAscending(copiedList);
+    case Sort.PRICE_DESCENDING:
+      return sortByPriceDescending(copiedList);
+    case Sort.NAME_ALPHABETIC:
+      return sortByNameAscending(copiedList);
+    case Sort.NAME_ALPHABETIC_REVERSE:
+      return sortByNameDescending(copiedList);
+    default:
+      return copiedList;
   }
-
-  return sortedList;
 }
 
-function sortList(whichAttribute: string, products: Product[]): Product[] {
-  return products.sort((p1, p2) => {
-    if (whichAttribute === "Price") {
-      if (p1.price < p2.price) {
-        return 1;
-      } else if (p1.price > p2.price) {
-        return -1;
-      }
-      return 0;
-    } else {
-      if (p1.name < p2.name) {
-        return 1;
-      } else if (p1.name > p2.name) {
-        return -1;
-      }
-      return 0;
-    }
-  });
+function sortByPriceAscending(products: Product[]): Product[] {
+  return products.sort((a, b) => a.price - b.price);
 }
+
+function sortByPriceDescending(products: Product[]): Product[] {
+  return products.sort((a, b) => b.price - a.price);
+}
+
+function sortByNameAscending(products: Product[]): Product[] {
+  return products.sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function sortByNameDescending(products: Product[]): Product[] {
+  return products.sort((a, b) => b.name.localeCompare(a.name));
+}
+
 
 /*
   2. Refaktorera funktionen createProductHtml :)
   */
+
+  //CODESMELLS: 
 class Cart {
   addToCart(i: number) {}
 }
@@ -75,25 +60,39 @@ export let productList = JSON.parse(localStorage.getItem("savedList") || "[]");
 
 export function createProductHtml() {
   let quantity = 0;
+
   for (let i = 0; i < cartList.length; i++) {
     quantity += cartList[i].quantity;
   }
+
+
   let floatingCart = document.getElementById(
     "floatingcartnumber"
   ) as HTMLElement;
   floatingCart.innerHTML = "" + quantity;
 
   for (let i = 0; i < productList.length; i++) {
+
+    //create element for dogProduct
+    //create element for dogImg
+
+
     let dogproduct: HTMLDivElement = document.createElement("div");
+
     let dogImgContainer: HTMLDivElement = document.createElement("div");
-    dogImgContainer.className = "dogimgcontainer";
     dogproduct.appendChild(dogImgContainer);
-    let dogImg: HTMLImageElement = document.createElement("img");
 
-    dogImg.src = productList[i].picture;
-    dogImg.alt = productList[i].pictureAlt;
 
-    dogImg.addEventListener("mouseover", () => {
+    function createDogImage() {
+      let dogImg: HTMLImageElement = document.createElement("img");
+
+      dogImg.src = productList[i].picture;
+      dogImg.alt = productList[i].pictureAlt;
+
+      dogImgContainer.className = "dogimgcontainer";
+      dogImgContainer.appendChild(dogImg);
+
+      dogImg.addEventListener("mouseover", () => {
       cartSymbolContainer.classList.add("hover");
       dogImg.classList.add("hover");
     });
@@ -102,29 +101,58 @@ export function createProductHtml() {
       dogImg.classList.remove("hover");
       cartSymbolContainer.classList.remove("hover");
     });
+    }
 
-    dogImgContainer.appendChild(dogImg);
-    let cartSymbolContainer: HTMLDivElement = document.createElement("div");
-    cartSymbolContainer.className = "cartSymbolContainer";
-    dogImgContainer.appendChild(cartSymbolContainer);
+    
 
-    let cartSymbol: HTMLElement = document.createElement("i");
-    cartSymbol.className = "bi bi-bag-plus";
-    cartSymbolContainer.appendChild(cartSymbol);
+    
 
-    let name: HTMLHeadingElement = document.createElement("h5");
-    name.innerHTML = productList[i].name;
-    dogproduct.appendChild(name);
 
-    let price: HTMLHeadingElement = document.createElement("p");
-    price.innerHTML = "$" + productList[i].price;
-    dogproduct.appendChild(price);
+    //create cart Symbol container
+    function createCartSymbolContainer(){
+      let cartSymbolContainer: HTMLDivElement = document.createElement("div");
+      cartSymbolContainer.className = "cartSymbolContainer";
+      dogImgContainer.appendChild(cartSymbolContainer);
+    }
 
-    let info: HTMLHeadingElement = document.createElement("p");
-    info.innerHTML = productList[i].info;
-    dogproduct.appendChild(info);
+    //create cart symbol
+    function createCartSymbol() {
+      let cartSymbol: HTMLElement = document.createElement("i");
+      cartSymbol.className = "bi bi-bag-plus";
+
+      return cartSymbol;
+      cartSymbolContainer.appendChild(cartSymbol);
+    };
+
+    //create element for name
+    function createName() {
+      let name: HTMLHeadingElement = document.createElement("h5");
+      name.innerHTML = productList[i].name;
+      dogproduct.appendChild(name);
+    }
+
+    //create element for price
+    function createPrice() {
+      let price: HTMLHeadingElement = document.createElement("p");
+      price.innerHTML = "$" + productList[i].price;
+      dogproduct.appendChild(price);
+    }
+
+    //create element for info
+    function createInfo() {
+      let info: HTMLHeadingElement = document.createElement("p");
+      info.innerHTML = productList[i].info;
+      dogproduct.appendChild(info);
+    }
+
+
+
 
     productList[i].productSpec = false;
+
+
+
+
 
     dogImg.addEventListener("click", () => {
       productList[i].productSpec = !productList[i].productSpec;
@@ -133,10 +161,17 @@ export function createProductHtml() {
       localStorage.setItem("savedList", listastext);
     });
 
+
+
+
     cartSymbol.addEventListener("click", () => {
       let cart = new Cart();
       cart.addToCart(i);
     });
+
+
+
+
 
     if (productList[i].category === "sassy") {
       let cat1: HTMLElement = document.getElementById("sassy") as HTMLElement;
@@ -174,14 +209,9 @@ export function createProductHtml() {
 /*
   3. Refaktorera funktionen getfromstorage
   */
-export class CartProduct {
-  constructor(
-    public name: string,
-    public image: string,
-    public price: number,
-    public amount: number
-  ) {}
-}
+
+  //CODE SMELLS: lägger CartProduct i models. 
+
 
 function getfromstorage() {
   let container = document.getElementById("checkout-table");
@@ -262,3 +292,4 @@ function getfromstorage() {
   totalprice2.innerHTML = addition + "$";
   totalprice2.id = "totalincenter";
 }
+

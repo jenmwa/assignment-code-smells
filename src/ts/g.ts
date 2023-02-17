@@ -14,7 +14,7 @@
 //   return totalNumber;
 // }
 //undvika  onödig tilldelning variabel, return direkt, FUNKTIONSNAMN - sammanfatta längd.
-function getLength(jumpings: number[]): number {
+function getTotalLength(jumpings: number[]): number {
   return jumpings.reduce((jumpDistanceSoFar, currentJump) => jumpDistanceSoFar + currentJump);
 }
 
@@ -57,7 +57,7 @@ class Student {
   ) {}
 }
 
-function getSebastiansStudentStatus(student: Student): string {
+function getStudentStatus(student: Student): string {
   const student_name = 'Sebastian';
     if (student.name === student_name && student.handedInOnTime) {
       student.passed = true;
@@ -113,14 +113,7 @@ const ONE_WEEK_IN_MS = 604800000;
 const CITY_NAME = "Stockholm";
 const DAYS_IN_WEEK = 7;
 
-//Tar ej med en vecka från nu-villkoret
-// function averageWeeklyTemperatureInStockholm(measuredTemperatures: Temp[]) {
-//   const days_in_week = 7;
-//   const sumOfTemps = measuredTemperatures.reduce((accumulator, currentValue) => accumulator + currentValue.temperature, 0);
-//   return sumOfTemps / days_in_week;
-// }
-
-function averageWeeklyTemperature(measuredTemperatures: Temp[]) { // averageWeeklyTemperature, and avregaeDAILYTemperature
+function totalWeeklyTemperature(measuredTemperatures: Temp[]) { // averageWeeklyTemperature, and avregaeDAILYTemperature
   let sumOfTemps = 0;
 
   for (let i = 0; i < measuredTemperatures.length; i++) {
@@ -130,9 +123,20 @@ function averageWeeklyTemperature(measuredTemperatures: Temp[]) { // averageWeek
       }
     }
   }
-  return sumOfTemps / DAYS_IN_WEEK ;
+  return sumOfTemps;
 }
 
+function averageWeeklyTemperature(sumOfTemps: number, DAYS_IN_WEEK: number) {
+  return sumOfTemps / DAYS_IN_WEEK; 
+}
+
+
+//Tar ej med en vecka från nu-villkoret
+// function averageWeeklyTemperatureInStockholm(measuredTemperatures: Temp[]) {
+//   const days_in_week = 7;
+//   const sumOfTemps = measuredTemperatures.reduce((accumulator, currentValue) => accumulator + currentValue.temperature, 0);
+//   return sumOfTemps / days_in_week;
+// }
 
 /*
   4. Följande funktion kommer att presentera ett objekt i dom:en. 
@@ -226,7 +230,7 @@ function showProduct(product: Product, parent: HTMLElement) {
 //     }
 //   }
 // }
-//dupliucerad kod. VAD SKER - vi skapar html, beroende på handedInOnTime - checkbox checked. därefter placerar i ul.
+//dupliucerad kod. VAD SKER - vi skapar html, beroende på handedInOnTime - checkbox checked. därefter placerar i ul. div utbytt mot li pga mer semantiskt korrekt.
 function createHTML(handedInOnTime: boolean): HTMLLIElement {
   let listItem = document.createElement("li");
   let checkbox = document.createElement("input");
@@ -241,6 +245,7 @@ function presentStudents(students: Student[]) {
   for (const student of students) {
     let listItem = createHTML(student.handedInOnTime);
     let listOfStudents;
+
     if (student.handedInOnTime) {
       listOfStudents = document.querySelector("ul#passedstudents");
     } else {
@@ -307,13 +312,12 @@ class User {
     public birthday: Date,
     public email: string,
     public password: string,
-    public avatarURL?: string,
-    public adress?: string,
 
   ) {}
   
   validateUserAge(user: User): number {
     const unix_start_year = 1970;
+
     let ageDiff = Date.now() - user.birthday.getTime();
     let ageDate = new Date(ageDiff);
     let userAge = Math.abs(ageDate.getUTCFullYear() - unix_start_year);
@@ -322,12 +326,15 @@ class User {
   }
 };
 
+const MINIMUN_AGE = 20;
+const ERROR_MSG = "Du är under 20 år";
+
 function createUser(user: User) {
   const userAge = user.validateUserAge(user);
-  if (userAge > 20) {
+  if (userAge > MINIMUN_AGE) {
     // Logic for creating a user
   } else {
-      return "Du är under 20 år";
+      return ERROR_MSG;
     }
 }
 
