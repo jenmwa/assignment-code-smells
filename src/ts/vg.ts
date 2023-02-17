@@ -73,7 +73,7 @@ export function createProductHtml() {
 
     createInfoElement(i, dogproduct);
 
-    sortFunction(i, dogproduct);
+    categories(i, dogproduct);
 
 }
 
@@ -82,7 +82,6 @@ export function createProductHtml() {
       dogImageContainer.className = "dogimgcontainer";
 
       let dogImg: HTMLImageElement = document.createElement("img");
-
       dogImg.src = productList[i].picture;
       dogImg.alt = productList[i].pictureAlt;
 
@@ -98,14 +97,9 @@ export function createProductHtml() {
 
       dogImageContainer.appendChild(dogImg);
 
-      let cartSymbolContainer: HTMLDivElement = document.createElement("div");
-      cartSymbolContainer.className = "cartSymbolContainer";
-      dogImageContainer.appendChild(cartSymbolContainer);
+      let cartSymbolContainer: HTMLDivElement = createCartSymbolContainer(dogImageContainer);
     
-      let cartSymbol: HTMLElement = document.createElement("i");
-      cartSymbol.className = "bi bi-bag-plus";
-      cartSymbolContainer.appendChild(cartSymbol);
-
+      let cartSymbol: HTMLElement = createCartSymbol(cartSymbolContainer);
 
       cartSymbol.addEventListener("click", () => {
         let cart = new Cart();
@@ -124,11 +118,25 @@ export function createProductHtml() {
       return dogImageContainer;
 
       }
-
+      
   }
 
   setLocalStorage();
 
+
+function createCartSymbol(cartSymbolContainer: HTMLDivElement) {
+  let cartSymbol: HTMLElement = document.createElement("i");
+  cartSymbol.className = "bi bi-bag-plus";
+  cartSymbolContainer.appendChild(cartSymbol);
+  return cartSymbol;
+}
+
+function createCartSymbolContainer(dogImageContainer: HTMLDivElement) {
+  let cartSymbolContainer: HTMLDivElement = document.createElement("div");
+  cartSymbolContainer.className = "cartSymbolContainer";
+  dogImageContainer.appendChild(cartSymbolContainer);
+  return cartSymbolContainer;
+}
 
 function createInfoElement(i: number, dogproduct: HTMLDivElement) {
   let info: HTMLHeadingElement = document.createElement("p");
@@ -164,7 +172,7 @@ function updateCart() {
   floatingCart.innerHTML = "" + quantity;
 }
 
-function sortFunction(i: number, dogproduct: HTMLDivElement) {
+function categories(i: number, dogproduct: HTMLDivElement) {
   if (productList[i].category === "sassy") {
     let cat1: HTMLElement = document.getElementById("sassy") as HTMLElement;
     dogproduct.className = "dogproduct";
