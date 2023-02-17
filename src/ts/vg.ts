@@ -5,7 +5,6 @@ import { CartProduct } from '../models/CartProduct'
 1. Se om du kan hitta problem med koden nedan och se om du kan göra den bättre.
 */
 
-//CODE SMELLS: dubbeldefinerade parametrar. FÖRENKLA sorteringsfunktionerna, mkt kodduplicering, stavfel descending + skapa models - Product.
 export enum Sort {
   PRICE_ASCENDING = "Stigande pris",
   PRICE_DESCENDING = "Sjunkande pris",
@@ -51,7 +50,6 @@ function sortByNameDescending(products: Product[]): Product[] {
   2. Refaktorera funktionen createProductHtml :)
   */
 
-  //CODESMELLS: dela upp i mindre funktioner!!!
 class Cart {
   addToCart(i: number) {}
 };
