@@ -153,7 +153,6 @@ function sortByNameDescending(products: Product[]): Product[] {
     sessionStorage.clear();
   }
 
-
 /*
   3. Refaktorera funktionen getfromstorage
   */
